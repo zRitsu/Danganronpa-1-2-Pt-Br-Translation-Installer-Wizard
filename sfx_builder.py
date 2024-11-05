@@ -1,3 +1,4 @@
+import hashlib
 import subprocess
 import os
 
@@ -39,3 +40,14 @@ subprocess.run([
 
 os.remove("setup.exe")
 os.remove("config.sfx")
+
+sha256 = hashlib.sha256()
+
+with open("DR_trad_installer.exe", "rb") as f:
+    for chunk in iter(lambda: f.read(4096), b""):
+        sha256.update(chunk)
+
+hash_value  = sha256.hexdigest()
+
+with open("sha256.txt", "w") as sha_file:
+    sha_file.write(hash_value)
