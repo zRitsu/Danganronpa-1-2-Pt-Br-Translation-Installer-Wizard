@@ -1,0 +1,1 @@
+Você deve incluir o arquivo de tradução que inicie com nome dr1_data_keyboard ou dr2_data_keyboard que termine com extensão .wad
