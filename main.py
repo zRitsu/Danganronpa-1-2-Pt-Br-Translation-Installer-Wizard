@@ -110,7 +110,7 @@ def run():
                 current_file = os.path.join(values["game_dir"], file)
 
         elif event == "discord_server":
-            webbrowser.open("https://discord.gg/aE7yGJz")
+            webbrowser.open("https://discord.gg/gHqMmXRX3t")
 
         elif event == "install":
             try:
