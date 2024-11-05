@@ -124,7 +124,7 @@ def run():
 
                 os.makedirs(f"{current_dir}/.backup", exist_ok=True)
 
-                if not os.path.isfile(f"{current_dir}/.backup/{current_file}"):
+                if not os.path.isfile(f"{current_dir}/.backup/{os.path.basename(current_file)}"):
                     shutil.move(current_file, f"{current_dir}/.backup")
 
                 try:
@@ -132,7 +132,10 @@ def run():
                 except FileNotFoundError:
                     pass
 
-                shutil.move(f"PATCH_FILE/{base_file}.wad", current_file)
+                for f in os.listdir(f"./PATCH_FILE"):
+                    if not f.startswith(base_file):
+                        continue
+                    shutil.move(f"PATCH_FILE/{f}", current_file)
 
                 sg.Popup("Instalação concluída!", "Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.")
                 return
