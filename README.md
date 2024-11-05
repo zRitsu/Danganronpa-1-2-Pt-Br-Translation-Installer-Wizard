@@ -5,7 +5,8 @@
 
 ## Como usar:
 
-* Tenha instalado e configurado no [PATH](https://entredatos.es/wp-content/uploads/2021/05/word-image-13.png) o python 3.9 ou superior
+* Ter o [Python](https://www.python.org/) 3.9 ou superior instalado e configurado no [PATH](https://entredatos.es/wp-content/uploads/2021/05/word-image-13.png)
+* Ter WinRar instalado ([download aqui](https://www.win-rar.com/predownload.html?&L=9)).
 * Baixe o conteudo desse repositório pelo botão Code -> Download zip
 * Extraia o arquivo baixado
 * Caso necessário, edite os arquivos install_message.txt e title_message.txt pra atualizar informações sobre a tradução/projeto
