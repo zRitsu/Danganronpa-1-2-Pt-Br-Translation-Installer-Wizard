@@ -128,7 +128,7 @@ def run():
                     pass
 
                 for f in os.listdir(f"./PATCH_FILE"):
-                    if not f.startswith(base_file):
+                    if not f.startswith(base_file) or not f.endswith(".wad"):
                         continue
                     shutil.copy(f"PATCH_FILE/{f}", current_file)
                     break
