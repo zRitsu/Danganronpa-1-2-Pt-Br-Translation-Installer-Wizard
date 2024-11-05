@@ -130,7 +130,8 @@ def run():
                 for f in os.listdir(f"./PATCH_FILE"):
                     if not f.startswith(base_file):
                         continue
-                    shutil.move(f"PATCH_FILE/{f}", current_file)
+                    shutil.copy(f"PATCH_FILE/{f}", current_file)
+                    break
 
                 sg.Popup("Instalação concluída!", "Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.")
                 return
