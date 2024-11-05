@@ -3,6 +3,11 @@ import subprocess
 import os
 
 
+if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch")) and os.path.isfile(f"./PATCH_FILE/{w}")]:
+    raise Exception(
+        "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que inicie com nome dr1_data_keyboard ou dr2_data_keyboard que termine com extensão .wad ou .patch)"
+    )
+
 os.system("pyinstaller -F -i icon.ico -c --noconsole main.py")
 
 try:
@@ -11,11 +16,6 @@ except (FileExistsError, FileNotFoundError):
     pass
 
 os.rename("./dist/main.exe", "setup.exe")
-
-if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch")) and os.path.isfile(f"./PATCH_FILE/{w}")]:
-    raise Exception(
-        "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que inicie com nome dr1_data_keyboard ou dr2_data_keyboard que termine com extensão .wad ou .patch)"
-    )
 
 filelist = [
     "install_message.txt",
