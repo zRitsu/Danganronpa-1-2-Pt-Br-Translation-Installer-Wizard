@@ -3,8 +3,13 @@ import subprocess
 import os
 
 
-if not os.path.isfile("./dist/main.exe"):
-    os.system("pyinstaller -F -i icon.ico -c --noconsole main.py")
+os.system("pyinstaller -F -i icon.ico -c --noconsole main.py")
+
+try:
+    os.remove("./setup.exe")
+except (FileExistsError, FileNotFoundError):
+    pass
+
 os.rename("./dist/main.exe", "setup.exe")
 
 if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch")) and os.path.isfile(f"./PATCH_FILE/{w}")]:
