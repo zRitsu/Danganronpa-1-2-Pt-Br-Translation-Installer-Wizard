@@ -6,6 +6,5 @@ if not exist venv (
   call "venv\scripts\activate"
 )
 
-pyinstaller -F -i icon.ico -c --noconsole main.py
-::pyinstaller -F -i icon.ico -c main.py
+python wizard_build.py build
 pause

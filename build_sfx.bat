@@ -6,5 +6,6 @@ if not exist venv (
   call "venv\scripts\activate"
 )
 
+python wizard_build.py build
 python sfx_builder.py
 pause

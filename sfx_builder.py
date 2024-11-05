@@ -9,22 +9,12 @@ if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch")) 
         "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que inicie com nome dr1_data_keyboard ou dr2_data_keyboard que termine com extensão .wad ou .patch)"
     )
 
-os.system("pyinstaller -F -i icon.ico -c --noconsole main.py")
-
-try:
-    os.remove("./setup.exe")
-except (FileExistsError, FileNotFoundError):
-    pass
-
-os.rename("./dist/main.exe", "setup.exe")
-
 filelist = [
     "install_message.txt",
     "title_message.txt",
-    "setup.exe",
     "icon.ico",
     "logo.png",
-    "PATCH_FILE/"
+    "PATCH_FILE/",
 ]
 
 winrar_path = os.path.join(os.environ["PROGRAMFILES"], "WinRAR/WinRAR.exe")
@@ -49,8 +39,11 @@ subprocess.run([
     winrar_path, "a", "-sfx", r"-iiconicon.ico", "-zconfig.sfx", "DR_trad_installer.exe", *filelist
 ], check=True)
 
-os.remove("setup.exe")
 os.remove("config.sfx")
+
+subprocess.run([
+    winrar_path, "u", "-sfx", "-r", "-ep1 ", "DR_trad_installer.exe", "dr_wizard\*"
+], check=True)
 
 sha256 = hashlib.sha256()
 
