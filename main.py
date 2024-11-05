@@ -98,11 +98,6 @@ def run():
         event, values = installer_window.read()
 
         if event in (sg.WIN_CLOSED, 'exit', 'Cancelar', sg.WIN_CLOSE_ATTEMPTED_EVENT):
-            if os.getcwd().startswith(os.environ["TEMP"]):
-                try:
-                    shutil.rmtree("./PATCH_FILE")
-                except:
-                    pass
             installer_window.close()
             return
 
