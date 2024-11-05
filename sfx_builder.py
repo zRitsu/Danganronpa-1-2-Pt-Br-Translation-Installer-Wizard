@@ -39,6 +39,11 @@ Overwrite=1
 with open("config.sfx", "w") as config_file:
     config_file.write(config_text)
 
+try:
+    os.remove("DR_trad_installer.exe")
+except FileNotFoundError:
+    pass
+
 subprocess.run([
     winrar_path, "a", "-sfx", r"-iiconicon.ico", "-zconfig.sfx", "DR_trad_installer.exe", *filelist
 ], check=True)
