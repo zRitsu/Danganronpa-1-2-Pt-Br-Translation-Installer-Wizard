@@ -1,4 +1,4 @@
-# Danganronpa Pt-Br Translation Installer Wizard
+# Danganronpa 1/2 Pt-Br Translation Installer Wizard
  Um pequeno instalador da tradução do danganronpa 1 e 2 que fiz para o projeto de tradução da Kibou Project
 
 [![](https://discordapp.com/api/guilds/420923628222414859/embed.png?style=banner2)](https://discord.gg/gHqMmXRX3t)
