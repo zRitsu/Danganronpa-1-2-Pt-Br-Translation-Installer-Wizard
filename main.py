@@ -91,7 +91,7 @@ def run():
     installer_window = sg.Window(
         title,
         layout=layout,
-        icon="./icon.ico"
+        icon=icon_file,
     )
 
     while True:
@@ -105,7 +105,7 @@ def run():
         if event == "game_dir":
             if not (file:=check_dir(base_file, values["game_dir"])):
                 installer_window["install"].update(disabled=True)
-                sg.Popup("Erro:", 'O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9))
+                sg.PopupError('O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9), title="Erro!", icon=icon_file)
             else:
                 installer_window["install"].update(disabled=False)
                 current_file = os.path.join(values["game_dir"], file)
@@ -115,7 +115,6 @@ def run():
 
         elif event == "install":
             try:
-
                 current_dir = os.path.dirname(current_file)
 
                 if not os.path.isdir(current_dir):
@@ -141,11 +140,11 @@ def run():
                     shutil.copy(f"PATCH_FILE/{f}", current_file)
                     break
 
-                sg.Popup("Instalação concluída!", "Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.")
+                sg.Popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
                 return
 
             except Exception as e:
                 traceback.print_exc()
-                sg.Popup("Erro:", f"{repr(e)}")
+                sg.PopupError(f"{repr(e)}", title="Erro:", icon=icon_file)
 
 run()
