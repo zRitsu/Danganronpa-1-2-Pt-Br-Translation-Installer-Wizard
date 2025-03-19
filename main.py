@@ -8,6 +8,7 @@ from psutil import disk_partitions
 
 sg.change_look_and_feel("Reddit")
 
+icon_file = "./icon.ico"
 
 def get_disk_partitions():
     partitions = disk_partitions()
@@ -116,6 +117,13 @@ def run():
             try:
 
                 current_dir = os.path.dirname(current_file)
+
+                if not os.path.isdir(current_dir):
+                    sg.PopupError(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
+
+                if not os.access(current_dir, os.W_OK):
+                    sg.PopupError(f"O instalador não está com permissão para alterar os arquivos do jogo no "
+                                  f"diretório selecionado. Experimente executar o instalador como administrador", title="Erro!", icon=icon_file)
 
                 os.makedirs(f"{current_dir}/.backup", exist_ok=True)
 
