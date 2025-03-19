@@ -121,10 +121,12 @@ def run():
 
                 if not os.path.isdir(current_dir):
                     sg.Popup(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
+                    continue
 
                 if not os.access(current_dir, os.W_OK):
                     sg.Popup(f"O instalador não está com permissão para alterar os arquivos do jogo no "
                                   f"diretório selecionado. Experimente executar o instalador como administrador", title="Erro!", icon=icon_file)
+                    continue
 
                 os.makedirs(f"{current_dir}/.backup", exist_ok=True)
 
