@@ -72,7 +72,7 @@ def run():
                       font=("Helvetica", 10))],
         [sg.Text("Diretório do game:")],
         [
-            sg.InputText(enable_events=True, key="game_dir", size=(51, 1), default_text=current_file),
+            sg.InputText(enable_events=True, key="game_dir", size=(51, 1), default_text=current_file, readonly=True),
             sg.FolderBrowse("Procurar", font=("Helvetica", 10, "bold"))
         ],
         [
@@ -96,32 +96,34 @@ def run():
 
     while True:
 
-        event, values = installer_window.read()
+        try:
 
-        if event in (sg.WIN_CLOSED, 'exit', 'Cancelar', sg.WIN_CLOSE_ATTEMPTED_EVENT):
-            installer_window.close()
-            return
+            event, values = installer_window.read()
 
-        if event == "game_dir":
-            if not (file:=check_dir(base_file, values["game_dir"])):
-                installer_window["install"].update(disabled=True)
-                sg.PopupError('O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9), title="Erro!", icon=icon_file)
-            else:
-                installer_window["install"].update(disabled=False)
-                current_file = os.path.join(values["game_dir"], file)
+            if event in (sg.WIN_CLOSED, 'exit', 'Cancelar', sg.WIN_CLOSE_ATTEMPTED_EVENT):
+                installer_window.close()
+                return
 
-        elif event == "discord_server":
-            webbrowser.open("https://discord.gg/gHqMmXRX3t")
+            if event == "game_dir":
+                if not (file:=check_dir(base_file, values["game_dir"])):
+                    installer_window["install"].update(disabled=True)
+                    sg.Popup('O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9), title="Erro!", icon=icon_file)
+                else:
+                    installer_window["install"].update(disabled=False)
+                    current_file = os.path.join(values["game_dir"], file)
 
-        elif event == "install":
-            try:
+            elif event == "discord_server":
+                webbrowser.open("https://discord.gg/gHqMmXRX3t")
+
+            elif event == "install":
+
                 current_dir = os.path.dirname(current_file)
 
                 if not os.path.isdir(current_dir):
-                    sg.PopupError(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
+                    sg.Popup(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
 
                 if not os.access(current_dir, os.W_OK):
-                    sg.PopupError(f"O instalador não está com permissão para alterar os arquivos do jogo no "
+                    sg.Popup(f"O instalador não está com permissão para alterar os arquivos do jogo no "
                                   f"diretório selecionado. Experimente executar o instalador como administrador", title="Erro!", icon=icon_file)
 
                 os.makedirs(f"{current_dir}/.backup", exist_ok=True)
@@ -143,8 +145,8 @@ def run():
                 sg.Popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
                 return
 
-            except Exception as e:
-                traceback.print_exc()
-                sg.PopupError(f"{repr(e)}", title="Erro:", icon=icon_file)
+        except Exception as e:
+            traceback.print_exc()
+            sg.Popup(f"{repr(e)}", title="Erro!", icon=icon_file)
 
 run()
