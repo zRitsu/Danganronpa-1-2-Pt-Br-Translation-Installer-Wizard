@@ -3,7 +3,7 @@ import shutil
 import traceback
 import webbrowser
 
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 from psutil import disk_partitions
 
 sg.change_look_and_feel("Reddit")
