@@ -141,6 +141,9 @@ def run():
                 for f in os.listdir(f"./PATCH_FILE"):
                     if not f.startswith(base_file) or not f.endswith(".wad"):
                         continue
+                    if f.endswith("_keyboard.wad"):
+                        if os.path.isfile(new_name:=f"{current_file}/{f.split('.wad')[0]}_us.wad"):
+                            f = new_name
                     shutil.copy(f"PATCH_FILE/{f}", current_file)
                     break
 
