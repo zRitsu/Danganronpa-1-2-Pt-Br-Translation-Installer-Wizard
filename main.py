@@ -23,6 +23,19 @@ def check_dir(base_file, directory):
         if f.startswith(base_file):
             return f
 
+def scan_dir(directory: str, base_file):
+
+    if not os.path.isdir(directory):
+        return
+
+    for d in os.listdir(directory):
+
+        if "danganronpa" not in d.lower():
+            continue
+
+        if check_dir(base_file, dr_dir := os.path.join(directory, d)):
+            return dr_dir
+
 def run():
 
     with open("install_message.txt", encoding="utf-8") as f:
@@ -31,41 +44,16 @@ def run():
     with open("title_message.txt", encoding="utf-8") as f:
         title = f.read()
 
-    base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".patch"))][0].split("keyboard")[0] + "keyboard"
+    base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".patch"))][0].rsplit(".", 1)[0].replace("_us", "")
 
-    game_dir = None
-
-    for d in os.listdir(os.environ["PROGRAMFILES"]):
-
-        if "danganronpa" not in d.lower():
-            continue
-
-        if check_dir(base_file, game_dir:=os.path.join(os.environ["PROGRAMFILES"], d)):
-            break
+    game_dir = scan_dir(os.environ["PROGRAMFILES"], base_file) or \
+        scan_dir(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/', base_file)
 
     if not game_dir:
-
         for drive_letter in get_disk_partitions():
-
-            if not os.path.isdir((steam_apps_dir := os.path.join(drive_letter, "/SteamLibrary/steamapps/common"))):
-                continue
-
-            for d in os.listdir(steam_apps_dir):
-
-                if "danganronpa" not in d.lower():
-                    continue
-
-                if check_dir(base_file, game_dir := os.path.join(steam_apps_dir, d)):
-                    break
-
-        if not game_dir:
-
-            for d in os.listdir(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/'):
-                if "danganronpa" not in d.lower():
-                    continue
-                if check_dir(base_file,
-                             game_dir := os.path.join(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/', d)):
-                    break
+            if dr_dir:=scan_dir(os.path.join(drive_letter, "/SteamLibrary/steamapps/common"), base_file):
+                game_dir = dr_dir
+                break
 
     left_column = [
         [sg.Image("logo.png")]
