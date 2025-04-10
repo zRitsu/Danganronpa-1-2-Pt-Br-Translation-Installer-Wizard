@@ -78,7 +78,7 @@ def run():
         [
             sg.Button("Discord Server", font=('Arial Black', 12), button_color="MediumPurple3", key="discord_server"),
             sg.Push(),
-            sg.Button("Instalar", key="install", font=('Arial Black', 12)),
+            sg.Button("Instalar", key="install", font=('Arial Black', 12), disabled=not current_file),
             sg.Button("Cancelar", font=('Arial Black', 12)),
         ]
     ]
