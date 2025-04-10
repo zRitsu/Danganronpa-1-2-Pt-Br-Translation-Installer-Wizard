@@ -140,7 +140,7 @@ def run():
                             os.remove(f"{game_dir}/{dest_filename}")
                         except FileNotFoundError:
                             pass
-                    shutil.copy(f"PATCH_FILE/{f}", f"{game_dir}/{dest_filename}")
+                    shutil.copy(f"PATCH_FILE/{f}", dest_filename)
                     break
 
                 sg.popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
