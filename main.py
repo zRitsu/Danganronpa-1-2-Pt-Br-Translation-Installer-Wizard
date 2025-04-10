@@ -35,31 +35,37 @@ def run():
 
     game_dir = None
 
-    for drive_letter in get_disk_partitions():
+    for d in os.listdir(os.environ["PROGRAMFILES"]):
 
-        if not os.path.isdir((steam_apps_dir:=os.path.join(drive_letter, "/SteamLibrary/steamapps/common"))):
+        if "danganronpa" not in d.lower():
             continue
 
-        for d in os.listdir(steam_apps_dir):
-
-            if "danganronpa" not in d.lower():
-                continue
-
-            if check_dir(base_file, game_dir:=os.path.join(steam_apps_dir, d)):
-                break
-
-        if game_dir:
+        if check_dir(base_file, game_dir:=os.path.join(os.environ["PROGRAMFILES"], d)):
             break
 
     if not game_dir:
 
-        for d in os.listdir(os.environ["PROGRAMFILES"]):
+        for drive_letter in get_disk_partitions():
 
-            if "danganronpa" not in d.lower():
+            if not os.path.isdir((steam_apps_dir := os.path.join(drive_letter, "/SteamLibrary/steamapps/common"))):
                 continue
 
-            if check_dir(base_file, game_dir:=os.path.join(os.environ["PROGRAMFILES"], d)):
-                break
+            for d in os.listdir(steam_apps_dir):
+
+                if "danganronpa" not in d.lower():
+                    continue
+
+                if check_dir(base_file, game_dir := os.path.join(steam_apps_dir, d)):
+                    break
+
+        if not game_dir:
+
+            for d in os.listdir(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/'):
+                if "danganronpa" not in d.lower():
+                    continue
+                if check_dir(base_file,
+                             game_dir := os.path.join(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/', d)):
+                    break
 
     left_column = [
         [sg.Image("logo.png")]
