@@ -33,7 +33,7 @@ def run():
 
     base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".patch"))][0].split("keyboard")[0] + "keyboard"
 
-    current_file = None
+    game_dir = None
 
     for drive_letter in get_disk_partitions():
 
@@ -45,22 +45,20 @@ def run():
             if "danganronpa" not in d.lower():
                 continue
 
-            if file:=check_dir(base_file, game_dir:=os.path.join(steam_apps_dir, d)):
-                current_file = os.path.join(game_dir, file)
+            if check_dir(base_file, game_dir:=os.path.join(steam_apps_dir, d)):
                 break
 
-        if current_file:
+        if game_dir:
             break
 
-    if not current_file:
+    if not game_dir:
 
         for d in os.listdir(os.environ["PROGRAMFILES"]):
 
             if "danganronpa" not in d.lower():
                 continue
 
-            if file:=check_dir(base_file, game_dir:=os.path.join(os.environ["PROGRAMFILES"], d)):
-                current_file = os.path.join(game_dir, file)
+            if check_dir(base_file, game_dir:=os.path.join(os.environ["PROGRAMFILES"], d)):
                 break
 
     left_column = [
@@ -72,13 +70,13 @@ def run():
                       font=("Helvetica", 10))],
         [sg.Text("Diretório do game:")],
         [
-            sg.InputText(enable_events=True, key="game_dir", size=(51, 1), default_text=current_file, readonly=True),
+            sg.InputText(enable_events=True, key="game_dir", size=(51, 1), default_text=game_dir, readonly=True),
             sg.FolderBrowse("Procurar", font=("Helvetica", 10, "bold"))
         ],
         [
             sg.Button("Discord Server", font=('Arial Black', 12), button_color="MediumPurple3", key="discord_server"),
             sg.Push(),
-            sg.Button("Instalar", key="install", font=('Arial Black', 12), disabled=not current_file),
+            sg.Button("Instalar", key="install", font=('Arial Black', 12), disabled=not game_dir),
             sg.Button("Cancelar", font=('Arial Black', 12)),
         ]
     ]
@@ -105,53 +103,57 @@ def run():
                 return
 
             if event == "game_dir":
-                if not (file:=check_dir(base_file, values["game_dir"])):
+                if not check_dir(base_file, values["game_dir"]):
                     installer_window["install"].update(disabled=True)
-                    sg.Popup('O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9), title="Erro!", icon=icon_file)
+                    sg.popup('O diretório selecionado não contém os arquivos do jogo!', font=('Arial Black', 9), title="Erro!", icon=icon_file)
                 else:
                     installer_window["install"].update(disabled=False)
-                    current_file = os.path.join(values["game_dir"], file)
+                    game_dir = values["game_dir"]
 
             elif event == "discord_server":
                 webbrowser.open("https://discord.gg/gHqMmXRX3t")
 
             elif event == "install":
 
-                current_dir = os.path.dirname(current_file)
-
-                if not os.path.isdir(current_dir):
-                    sg.Popup(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
+                if not os.path.isdir(game_dir):
+                    sg.popup(f"O diretório selecionado não existe!", title="Erro!", icon=icon_file)
                     continue
 
-                if not os.access(current_dir, os.W_OK):
-                    sg.Popup(f"O instalador não está com permissão para alterar os arquivos do jogo no "
+                if not os.access(game_dir, os.W_OK):
+                    sg.popup(f"O instalador não está com permissão para alterar os arquivos do jogo no "
                                   f"diretório selecionado. Experimente executar o instalador como administrador", title="Erro!", icon=icon_file)
                     continue
 
-                os.makedirs(f"{current_dir}/.backup", exist_ok=True)
-
-                if not os.path.isfile(f"{current_dir}/.backup/{os.path.basename(current_file)}"):
-                    shutil.move(current_file, f"{current_dir}/.backup")
-
-                try:
-                    os.remove(current_file)
-                except FileNotFoundError:
-                    pass
+                os.makedirs(f"{game_dir}/.backup", exist_ok=True)
 
                 for f in os.listdir(f"./PATCH_FILE"):
+
                     if not f.startswith(base_file) or not f.endswith(".wad"):
                         continue
-                    if f.endswith("_keyboard.wad"):
-                        if os.path.isfile(new_name:=f"{current_file}/{f.split('.wad')[0]}_us.wad"):
-                            f = new_name
-                    shutil.copy(f"PATCH_FILE/{f}", current_file)
+
+                    if os.path.isfile(new_current_file:=f"{game_dir}/{(f.split('.wad')[0] + '_us.wad')}"):
+                        dest_filename = new_current_file
+                    else:
+                        dest_filename = f
+
+                    if not os.path.isfile(f"{game_dir}/.backup/{dest_filename}"):
+                        try:
+                            shutil.move(f"{game_dir}/{dest_filename}", f"{game_dir}/.backup/{dest_filename}")
+                        except:
+                            pass
+                    else:
+                        try:
+                            os.remove(f"{game_dir}/{dest_filename}")
+                        except FileNotFoundError:
+                            pass
+                    shutil.copy(f"PATCH_FILE/{f}", f"{game_dir}/{dest_filename}")
                     break
 
-                sg.Popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
+                sg.popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
                 return
 
         except Exception as e:
             traceback.print_exc()
-            sg.Popup(f"{repr(e)}", title="Erro!", icon=icon_file)
+            sg.popup(f"{repr(e)}", title="Erro!", icon=icon_file)
 
 run()
