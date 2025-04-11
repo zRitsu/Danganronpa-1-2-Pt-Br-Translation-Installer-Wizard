@@ -130,14 +130,16 @@ def run():
                     else:
                         dest_filename = f
 
-                    if not os.path.isfile(f"{game_dir}/.backup/{dest_filename}"):
+                    wad_filename = os.path.basename(dest_filename)
+
+                    if not os.path.isfile(f"{game_dir}/.backup/{wad_filename}"):
                         try:
-                            shutil.move(f"{game_dir}/{dest_filename}", f"{game_dir}/.backup/{dest_filename}")
+                            shutil.move(f"{game_dir}/{wad_filename}", f"{game_dir}/.backup/{wad_filename}")
                         except:
-                            pass
+                            traceback.print_exc()
                     else:
                         try:
-                            os.remove(f"{game_dir}/{dest_filename}")
+                            os.remove(f"{game_dir}/{wad_filename}")
                         except FileNotFoundError:
                             pass
                     shutil.copy(f"PATCH_FILE/{f}", dest_filename)
