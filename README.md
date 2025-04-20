@@ -22,4 +22,4 @@
 * Copie o arquivo de tradução com nome "dr1_data_keyboard.wad" (ou dr2... etc) pra pasta PATCH_FILES que está nos arquivos extraidos
 * Execute o arquivo build_sfx.bat e aguarde o processo concluir, será gerado o arquivo DR_Trad_installer.exe
 
-[![Discord Presence](https://lanyard.cnrad.dev/api/184889853102653440?idleMessage=N%C3%A3o%20estou%20jogando%2Fouvindo%20algo%20no%20momento&theme=&borderRadius=20)](https://discord.com/users/184889853102653440)
+[![Discord Presence](https://lanyard.cnrad.dev/api/184889853102653440?idleMessage=Sem%20atividade%20no%20momento...)](https://discord.com/users/184889853102653440)
