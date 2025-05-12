@@ -53,7 +53,7 @@ subprocess.run([
 os.remove("config.sfx")
 
 subprocess.run([
-    winrar_path, "u", "-sfx", "-r", "-ep1 ", "DR_trad_installer.exe", "dr_wizard\*"
+    winrar_path, "u", "-sfx", "-r", "-ep1 ", "DR_trad_installer.exe", "dr_wizard\\*"
 ], check=True)
 
 sha256 = hashlib.sha256()
