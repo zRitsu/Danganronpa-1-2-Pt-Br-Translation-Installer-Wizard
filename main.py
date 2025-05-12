@@ -36,13 +36,59 @@ def scan_dir(directory: str, base_file):
         if check_dir(base_file, dr_dir := os.path.join(directory, d)):
             return dr_dir
 
+default_title_message = "Instalar Tradução: Danganronpa 2 PT-BR v4.2 beta"
+
+default_install_message = """
+Traduzido por Kibou Project
+
+Visite o nosso servidor do Discord: https://discord.gg/aE7yGJz
+
+-------- Notas da Versão 4.2 ---------------
+
+- Versão beta - 34
+
+- Melhorias no diálogo da personagem Sonia Nevermind
+
+-------- Conteúdo Atual da tradução -------------
+
+- História completa
+
+- Modo ilha
+
+- Novel
+
+- Garota Mágica Monomi
+
+- Freetimes
+
+- Itens e Habilidades
+
+- Descrição de personagens na Novel
+
+- Gamefix: Animação do Monokuma file #3
+
+- Novo Textbox (ainda em fase experimental)
+"""
+
 def run():
 
-    with open("install_message.txt", encoding="utf-8") as f:
-        text = f.read()
+    try:
+        with open("install_message.txt", encoding="utf-8") as f:
+            text = f.read()
+    except Exception as e:
+        sg.popup(f"{e}", title="Erro!", icon=icon_file)
+        with open("install_message.txt", "w", encoding="utf-8") as f:
+            f.write(default_install_message)
+        text = "Verifique o arquivo install_message.txt"
 
-    with open("title_message.txt", encoding="utf-8") as f:
-        title = f.read()
+    try:
+        with open("title_message.txt", encoding="utf-8") as f:
+            title = f.read()
+    except Exception as e:
+        sg.popup(f"{e}", title="Erro!", icon=icon_file)
+        with open("title_message.txt", "w", encoding="utf-8") as f:
+            f.write(default_title_message)
+        title = "Verifique o arquivo title_message.txt"
 
     base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".cpk", ".patch"))][0].rsplit(".", 1)[0].replace("_us", "")
 

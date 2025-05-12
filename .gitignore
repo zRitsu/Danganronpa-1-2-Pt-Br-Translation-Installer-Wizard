@@ -167,3 +167,5 @@ cython_debug/
 config.sfx
 *.exe
 sha256.txt
+install_message.txt
+title_message.txt
