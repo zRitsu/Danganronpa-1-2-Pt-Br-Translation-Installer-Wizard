@@ -2,6 +2,7 @@ import os
 import shutil
 import traceback
 import webbrowser
+from typing import List
 
 import FreeSimpleGUI as sg
 from psutil import disk_partitions
@@ -22,6 +23,11 @@ def check_dir(base_file, directory):
     for f in reversed(os.listdir(directory)):
         if f.startswith(base_file):
             return f
+
+def copy_examples(filenames: List[str]):
+    for filename in filenames:
+        if not os.path.isfile(filename):
+            shutil.copy(f"{filename}.example", filename)
 
 def scan_dir(directory: str, base_file):
 
@@ -71,6 +77,8 @@ Visite o nosso servidor do Discord: https://discord.gg/aE7yGJz
 """
 
 def run():
+
+    copy_examples(["icon.ico", "logo.png"])
 
     try:
         with open("install_message.txt", encoding="utf-8") as f:

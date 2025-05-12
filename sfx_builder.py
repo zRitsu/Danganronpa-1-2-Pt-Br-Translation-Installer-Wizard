@@ -2,7 +2,7 @@ import hashlib
 import subprocess
 import os
 
-from main import default_install_message, default_title_message
+from main import default_install_message, default_title_message, copy_examples
 
 if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch", ".cpk")) and os.path.isfile(f"./PATCH_FILE/{w}")]:
     os.makedirs("./PATCH_FILE")
@@ -17,6 +17,8 @@ if not os.path.isfile("install_message.txt"):
 if not os.path.isfile("title_message.txt"):
     with open("title_message.txt", "w", encoding="utf-8") as f:
         f.write(default_title_message)
+
+copy_examples(["icon.ico", "logo.png"])
 
 filelist = [
     "install_message.txt",
