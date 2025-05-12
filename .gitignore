@@ -160,6 +160,7 @@ cython_debug/
 #.idea/
 /PATCH_FILE/*.wad
 /PATCH_FILE/*.patch
+/PATCH_FILE/*.cpk
 /build/
 /dist/
 /.idea/
