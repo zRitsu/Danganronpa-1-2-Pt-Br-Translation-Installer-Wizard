@@ -200,4 +200,5 @@ def run():
             traceback.print_exc()
             sg.popup(f"{repr(e)}", title="Erro!", icon=icon_file)
 
-run()
+if __name__ == "__main__":
+    run()

@@ -1,13 +1,20 @@
 import os
 from cx_Freeze import setup, Executable
 
+from main import default_title_message
+
 if os.path.isfile("./icon.ico"):
     icon_file = "icon.ico"
 else:
     icon_file = None
 
-with open("title_message.txt", encoding='utf-8') as f:
-    title = f.read()
+try:
+    with open("title_message.txt", encoding='utf-8') as f:
+        title = f.read()
+except FileNotFoundError:
+    with open("title_message.txt", "w", encoding="utf-8") as f:
+        f.write(default_title_message)
+    title = default_title_message
 
 setup(
     name = title,
