@@ -44,7 +44,9 @@ def run():
     with open("title_message.txt", encoding="utf-8") as f:
         title = f.read()
 
-    base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".patch"))][0].rsplit(".", 1)[0].replace("_us", "")
+    base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".cpk", ".patch"))][0].rsplit(".", 1)[0].replace("_us", "")
+
+    file_extension = base_file.rsplit(".", 1)[-1].lower()
 
     game_dir = scan_dir(os.environ["PROGRAMFILES"], base_file) or \
         scan_dir(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/', base_file)
@@ -122,7 +124,7 @@ def run():
 
                 for f in os.listdir(f"./PATCH_FILE"):
 
-                    if not f.startswith(base_file) or not f.endswith(".wad"):
+                    if not f.lower().startswith(base_file) or not f.lower().endswith(file_extension):
                         continue
 
                     if os.path.isfile(new_current_file:=f"{game_dir}/{(f.split('.wad')[0] + '_us.wad')}"):
@@ -130,16 +132,16 @@ def run():
                     else:
                         dest_filename = f
 
-                    wad_filename = os.path.basename(dest_filename)
+                    patch_filename = os.path.basename(dest_filename)
 
-                    if not os.path.isfile(f"{game_dir}/.backup/{wad_filename}"):
+                    if not os.path.isfile(f"{game_dir}/.backup/{patch_filename}"):
                         try:
-                            shutil.move(f"{game_dir}/{wad_filename}", f"{game_dir}/.backup/{wad_filename}")
+                            shutil.move(f"{game_dir}/{patch_filename}", f"{game_dir}/.backup/{patch_filename}")
                         except:
                             traceback.print_exc()
                     else:
                         try:
-                            os.remove(f"{game_dir}/{wad_filename}")
+                            os.remove(f"{game_dir}/{patch_filename}")
                         except FileNotFoundError:
                             pass
                     shutil.copy(f"PATCH_FILE/{f}", dest_filename)
