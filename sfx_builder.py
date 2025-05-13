@@ -5,7 +5,7 @@ import os
 from main import default_install_message, default_title_message, copy_examples, detect_patch_base_file
 
 if not detect_patch_base_file():
-    os.makedirs("./PATCH_FILE", exist_ok=True)
+    os.makedirs("PATCH_FILE", exist_ok=True)
     raise Exception(
         "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que termine com a extensão .wad ou .patch ou .cpk)"
     )
@@ -25,14 +25,13 @@ filelist = [
     "title_message.txt",
     "icon.ico",
     "logo.png",
-    "PATCH_FILE/",
 ]
 
 winrar_path = os.path.join(os.environ["PROGRAMFILES"], "WinRAR/WinRAR.exe")
 
 config_text = f"""
 ; Instalador da tradução.
-Setup=setup.exe
+Setup=dr_wizard\\setup.exe
 TempMode
 Silent=2
 Overwrite=1
@@ -46,15 +45,28 @@ try:
 except FileNotFoundError:
     pass
 
+patch_file_extensions = ('.wad', '.patch', '.cpk')
+
+for root, dirs, files in os.walk("dr_wizard"):
+    for file in files:
+        filelist.append(os.path.join(root, file))
+
+for root, _, patch_dir in os.walk("PATCH_FILE"):
+    for file in patch_dir:
+        if file.lower().endswith(patch_file_extensions):
+            filepath = os.path.join(root, file)
+            filelist.append(filepath)
+
+with open("filelist.txt", "w", encoding="utf-8") as f:
+    f.write("\n".join(filelist))
+
 subprocess.run([
-    winrar_path, "a", "-sfx", r"-iiconicon.ico", "-zconfig.sfx", "DR_trad_installer.exe", *filelist
+    winrar_path, "a", "-sfx", r"-iiconicon.ico", "-zconfig.sfx", "DR_trad_installer.exe", "-v4000m",
+    "@filelist.txt",
 ], check=True)
 
 os.remove("config.sfx")
-
-subprocess.run([
-    winrar_path, "u", "-sfx", "-r", "-ep1 ", "DR_trad_installer.exe", "dr_wizard\\*"
-], check=True)
+os.remove("filelist.txt")
 
 sha256 = hashlib.sha256()
 

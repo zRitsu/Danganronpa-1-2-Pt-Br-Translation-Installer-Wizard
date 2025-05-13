@@ -1,5 +1,6 @@
 import os
 import shutil
+import tempfile
 import traceback
 import webbrowser
 from typing import List
@@ -11,6 +12,12 @@ sg.change_look_and_feel("Reddit")
 
 icon_file = "./icon.ico"
 
+temp_directory = tempfile.gettempdir()
+
+PATCH_FILE_DIR = "./PATCH_FILE"
+
+patch_extensions = (".wad", ".cpk", ".patch",)
+
 def get_disk_partitions():
     partitions = disk_partitions()
     drives = []
@@ -21,8 +28,11 @@ def get_disk_partitions():
 
 def check_dir(base_file, directory):
     for f in reversed(os.listdir(directory)):
+        if not os.path.isfile(os.path.join(directory, f)):
+            continue
         if f.startswith(base_file):
             return f
+    return None
 
 def copy_examples(filenames: List[str]):
     for filename in filenames:
@@ -30,23 +40,32 @@ def copy_examples(filenames: List[str]):
             shutil.copy(f"{filename}.example", filename)
 
 def detect_patch_base_file():
-    for dir_, subdirs, files in os.walk("./PATCH_FILE"):
+    for dir_, subdirs, files in os.walk(PATCH_FILE_DIR):
         for file in files:
-            if file.endswith((".wad", ".cpk", ".patch")):
-                return file.rsplit(".", 1)[0].replace("_us", "")
+            if file.endswith(patch_extensions):
+                return file
+    return None
 
 def scan_dir(directory: str, base_file):
-
     if not os.path.isdir(directory):
         return
 
     for d in os.listdir(directory):
 
+        full_path = os.path.join(directory, d)
+
         if "danganronpa" not in d.lower():
             continue
 
-        if check_dir(base_file, dr_dir := os.path.join(directory, d)):
-            return dr_dir
+        for root, _, dir_ in os.walk(full_path):
+
+            if not os.path.isdir(root):
+                continue
+
+            if check_dir(base_file, root):
+                return full_path
+
+    return None
 
 default_title_message = "Instalar Tradução: Danganronpa 2 PT-BR v4.2 beta"
 
@@ -109,8 +128,7 @@ def run():
     if not base_file:
         sg.popup("Não há arquivos do jogo nessa instalação!\n"
                  "Por favor entre em contato com a equipe de tradução do projeto.", title="Erro!", icon=icon_file)
-
-    file_extension = base_file.rsplit(".", 1)[-1].lower()
+        return
 
     game_dir = scan_dir(os.environ["PROGRAMFILES"], base_file) or \
         scan_dir(f'{os.environ["PROGRAMFILES(X86)"]}/Steam/steamapps/common/', base_file)
@@ -137,13 +155,15 @@ def run():
             sg.Button("Discord Server", font=('Arial Black', 12), button_color="MediumPurple3", key="discord_server"),
             sg.Push(),
             sg.Button("Instalar", key="install", font=('Arial Black', 12), disabled=not game_dir),
-            sg.Button("Cancelar", font=('Arial Black', 12)),
+            sg.Button("Cancelar", key="cancel", font=('Arial Black', 12)),
         ]
     ]
 
     layout = [
         [sg.Column(left_column, element_justification='center', expand_x=True, expand_y=True),
-         sg.Column(right_column)]
+         sg.Column(right_column)],
+        [sg.Text("", size=(62, 1), key="file_name", font=("Arial", 12), justification='center',
+                 background_color="Black", text_color="White")]
     ]
 
     installer_window = sg.Window(
@@ -158,7 +178,7 @@ def run():
 
             event, values = installer_window.read()
 
-            if event in (sg.WIN_CLOSED, 'exit', 'Cancelar', sg.WIN_CLOSE_ATTEMPTED_EVENT):
+            if event in (sg.WIN_CLOSED, 'exit', 'cancel', sg.WIN_CLOSE_ATTEMPTED_EVENT):
                 installer_window.close()
                 return
 
@@ -186,30 +206,39 @@ def run():
 
                 os.makedirs(f"{game_dir}/.backup", exist_ok=True)
 
-                for f in os.listdir(f"./PATCH_FILE"):
+                installer_window["install"].update("Instalando...", disabled=True)
+                installer_window["cancel"].update(disabled=True)
 
-                    if not f.lower().startswith(base_file) or not f.lower().endswith(file_extension):
-                        continue
+                for root, _, patch_dir in os.walk(PATCH_FILE_DIR):
 
-                    if os.path.isfile(new_current_file:=f"{game_dir}/{(f.split('.wad')[0] + '_us.wad')}"):
-                        dest_filename = new_current_file
-                    else:
-                        dest_filename = f
+                    for file in patch_dir:
 
-                    patch_filename = os.path.basename(dest_filename)
+                        if not file.endswith(patch_extensions):
+                            continue
 
-                    if not os.path.isfile(f"{game_dir}/.backup/{patch_filename}"):
-                        try:
-                            shutil.move(f"{game_dir}/{patch_filename}", f"{game_dir}/.backup/{patch_filename}")
-                        except:
-                            traceback.print_exc()
-                    else:
-                        try:
-                            os.remove(f"{game_dir}/{patch_filename}")
-                        except FileNotFoundError:
-                            pass
-                    shutil.copy(f"PATCH_FILE/{f}", dest_filename)
-                    break
+                        installer_window["file_name"].update(f"Copiando: {f}")
+                        installer_window.refresh()
+
+                        f = os.path.join(root, file).rsplit(PATCH_FILE_DIR, 1)[-1]
+
+                        if os.path.isfile(new_current_file:=f"{game_dir}/{(f.split('.wad')[0] + '_us.wad')}"):
+                            dest_filename = new_current_file
+                        else:
+                            dest_filename = f"{game_dir}/{f}"
+
+                        if not os.path.isfile(dest_bkp:=f"{game_dir}/.backup{os.path.dirname(f)}"):
+                            os.makedirs(dest_bkp, exist_ok=True)
+                            try:
+                                shutil.move(f"{game_dir}{f}", f"{game_dir}/.backup{f}")
+                            except:
+                                traceback.print_exc()
+                        else:
+                            try:
+                                os.remove(f"{game_dir}/{f}")
+                            except FileNotFoundError:
+                                pass
+
+                        shutil.copy(f"{PATCH_FILE_DIR}/{f}", dest_filename)
 
                 sg.popup("Não esqueça de selecionar a opção \"Keyboard and Mouse\" no launcher do game.", title="Instalação concluída!", icon=icon_file)
                 return
