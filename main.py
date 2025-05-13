@@ -216,10 +216,10 @@ def run():
                         if not file.endswith(patch_extensions):
                             continue
 
+                        f = os.path.join(root, file).rsplit(PATCH_FILE_DIR, 1)[-1]
+
                         installer_window["file_name"].update(f"Copiando: {f}")
                         installer_window.refresh()
-
-                        f = os.path.join(root, file).rsplit(PATCH_FILE_DIR, 1)[-1]
 
                         if os.path.isfile(new_current_file:=f"{game_dir}/{(f.split('.wad')[0] + '_us.wad')}"):
                             dest_filename = new_current_file
