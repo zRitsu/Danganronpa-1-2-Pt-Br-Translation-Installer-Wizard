@@ -29,6 +29,12 @@ def copy_examples(filenames: List[str]):
         if not os.path.isfile(filename):
             shutil.copy(f"{filename}.example", filename)
 
+def detect_patch_base_file():
+    for dir_, subdirs, files in os.walk("./PATCH_FILE"):
+        for file in files:
+            if file.endswith((".wad", ".cpk", ".patch")):
+                return file.rsplit(".", 1)[0].replace("_us", "")
+
 def scan_dir(directory: str, base_file):
 
     if not os.path.isdir(directory):
@@ -98,7 +104,11 @@ def run():
             f.write(default_title_message)
         title = "Verifique o arquivo title_message.txt"
 
-    base_file = [f for f in os.listdir("PATCH_FILE") if f.endswith((".wad", ".cpk", ".patch"))][0].rsplit(".", 1)[0].replace("_us", "")
+    base_file = detect_patch_base_file()
+
+    if not base_file:
+        sg.popup("Não há arquivos do jogo nessa instalação!\n"
+                 "Por favor entre em contato com a equipe de tradução do projeto.", title="Erro!", icon=icon_file)
 
     file_extension = base_file.rsplit(".", 1)[-1].lower()
 

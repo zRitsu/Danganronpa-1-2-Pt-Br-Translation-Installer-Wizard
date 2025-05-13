@@ -2,12 +2,12 @@ import hashlib
 import subprocess
 import os
 
-from main import default_install_message, default_title_message, copy_examples
+from main import default_install_message, default_title_message, copy_examples, detect_patch_base_file
 
-if not [w for w in os.listdir("./PATCH_FILE") if w.endswith((".wad", ".patch", ".cpk")) and os.path.isfile(f"./PATCH_FILE/{w}")]:
-    os.makedirs("./PATCH_FILE")
+if not detect_patch_base_file():
+    os.makedirs("./PATCH_FILE", exist_ok=True)
     raise Exception(
-        "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que inicie com nome dr1_data_keyboard ou dr2_data_keyboard que termine com extensão .wad ou .patch ou .cpk)"
+        "Você deve incluir o arquivo de tradução na pasta PATCH_FILE (que termine com a extensão .wad ou .patch ou .cpk)"
     )
 
 if not os.path.isfile("install_message.txt"):
