@@ -27,12 +27,11 @@ def get_disk_partitions():
     return drives
 
 def check_dir(base_file, directory):
-    for f in reversed(os.listdir(directory)):
-        if not os.path.isfile(os.path.join(directory, f)):
-            continue
-        if f.startswith(base_file):
-            return f
-    return None
+
+    if not os.path.isfile(full_path:=os.path.join(directory, base_file)):
+        return None
+
+    return full_path
 
 def copy_examples(filenames: List[str]):
     for filename in filenames:
@@ -146,7 +145,7 @@ def run():
         [sg.Text("Diretório do game:")],
         [
             sg.InputText(enable_events=True, key="game_dir", size=(51, 1), default_text=game_dir, readonly=True),
-            sg.FolderBrowse("Procurar", font=("Helvetica", 10, "bold"))
+            sg.FolderBrowse("Procurar", font=("Helvetica", 10, "bold"), key="select_game_dir")
         ],
         [
             sg.Button("Discord Server", font=('Arial Black', 12), button_color="MediumPurple3", key="discord_server"),
@@ -205,6 +204,7 @@ def run():
 
                 installer_window["install"].update("Instalando...", disabled=True)
                 installer_window["cancel"].update(disabled=True)
+                installer_window["select_game_dir"].update(disabled=True)
 
                 for root, _, patch_dir in os.walk(PATCH_FILE_DIR):
 
