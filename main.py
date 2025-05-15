@@ -43,7 +43,7 @@ def detect_patch_base_file():
     for dir_, subdirs, files in os.walk(PATCH_FILE_DIR):
         for file in files:
             if file.endswith(patch_extensions):
-                return file
+                return os.path.join(dir_[len(PATCH_FILE_DIR) + 1:], file)
     return None
 
 def scan_dir(directory: str, base_file):
@@ -57,13 +57,10 @@ def scan_dir(directory: str, base_file):
         if "danganronpa" not in d.lower():
             continue
 
-        for root, _, dir_ in os.walk(full_path):
+        if not os.path.isfile(os.path.join(full_path, base_file)):
+            continue
 
-            if not os.path.isdir(root):
-                continue
-
-            if check_dir(base_file, root):
-                return full_path
+        return full_path
 
     return None
 
