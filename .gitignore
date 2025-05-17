@@ -170,3 +170,6 @@ config.sfx
 sha256.txt
 install_message.txt
 title_message.txt
+/dr_wizard/
+/logo.png
+/icon.ico
