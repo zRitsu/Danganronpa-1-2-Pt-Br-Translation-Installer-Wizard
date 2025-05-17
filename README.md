@@ -18,7 +18,7 @@
 * Ter WinRar instalado ([download aqui](https://www.win-rar.com/predownload.html?&L=9)).
 * Baixe o conteudo desse repositório pelo botão Code -> Download zip
 * Extraia o arquivo baixado
-* Caso necessário, edite os arquivos install_message.txt e title_message.txt pra atualizar informações sobre a tradução/projeto
+* Caso necessário, crie ou  os arquivos install_message.txt e title_message.txt (para o nome da barra de título) pra incluir informações sobre a tradução/projeto.
 * Copie o arquivo de tradução com nome "dr1_data_keyboard.wad" (ou dr2, ou en\a1.cpk etc) pra pasta PATCH_FILES que está nos arquivos extraidos
 * Execute o arquivo build_sfx.bat e aguarde o processo concluir, será gerado o arquivo DR_Trad_installer.exe
 
